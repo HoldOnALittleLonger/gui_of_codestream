@@ -22,7 +22,7 @@
 #include<QtWidgets/QPushButton>
 #include<QtWidgets/QLabel>
 #include<QtCore/QString>
-
+#include<QtWidgets/QApplication>
 
 #include<fcntl.h>
 #include<unistd.h>
@@ -35,6 +35,8 @@
 
 namespace csgui {
 
+  static const char * const MEMORY_ERROR("ERROR : Memory allocate failed.");
+  static const char * const IO_ERROR("ERROR : IO exception.");
 
   /*  Csgui - constructor.
    *  @unix_socket_fd : unix socket for communicate with middle.
@@ -42,12 +44,11 @@ namespace csgui {
    */
   Csgui::Csgui(int unix_socket_fd) noexcept(false) : _encode_text("encode"), _decode_text("decode"), _current_action(0)
   {
-
     _mainWidget = new QWidget;
     _mainVBox = new QVBoxLayout;
     _selectionComboBox = new QComboBox;
     _keySpinBox = new QSpinBox;
-    _textLineEdit = new QLineEdit("");
+    _textLineEdit = new QLineEdit;
     _executePushButton = new QPushButton("start");
     _textLabel = new QLabel("nil");
 
@@ -66,14 +67,17 @@ namespace csgui {
     _mainVBox->addWidget(_keySpinBox);
     _mainVBox->addWidget(_textLineEdit);
     _mainVBox->addWidget(_executePushButton);
-    _mainVBox->addWidget(_textLabel, 1);
+    _mainVBox->addWidget(_textLabel);
     _mainWidget->setLayout(_mainVBox);
-    _mainWidget->show();
 
     QObject::connect(_executePushButton, SIGNAL(clicked()), this, SLOT(start()));
     QObject::connect(this, SIGNAL(shouldUpdate()), this, SLOT(update()));
-
     _unix_socket_fd = unix_socket_fd;
+
+    _mainWidget->resize(1024, 768);
+    _mainWidget->setWindowTitle("xwcode_stream");
+    _mainWidget->show();
+    QApplication::exec();
   }
 
   /*  ~Csgui - destructor  */
@@ -159,6 +163,7 @@ namespace csgui {
 
     _mainWidget->setLayout(_mainVBox);
     _mainWidget->show();
+    QApplication::exec();
   }
 
   void Csgui::updateLabel(const char *msg) noexcept(false)
@@ -174,6 +179,7 @@ namespace csgui {
     }
   }
 
+#include<QtWidgets/QApplication>
   /*  startEventLoop - start event loop driver  */
   void Csgui::startEventLoop(void) noexcept(false)
   {

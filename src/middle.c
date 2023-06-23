@@ -19,6 +19,7 @@
 #include<sys/socket.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<fcntl.h>
 #include<string.h>
 #include<stdio.h>
 
@@ -37,9 +38,11 @@ void middle_procedure(int unix_socket_fd)
 	else {
 		/*  redirection for 0 and 1  */
 		/*  child will inherits this  */
-		dup2(STDIN_FILENO, fdPipe[0]);
-		dup2(STDOUT_FILENO, fdPipe[1]);
+		dup2(fdPipe[0], STDIN_FILENO);
+		dup2(fdPipe[1], STDOUT_FILENO);
 	}
+
+	fcntl(unix_socket_fd, F_SETFD, FD_CLOEXEC);
 
 	while (1) {
 		struct gmprotocol gmp;

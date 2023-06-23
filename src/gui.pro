@@ -17,4 +17,6 @@ INCLUDEPATH += . ../inc
 SOURCES += gui.cc main.cc middle.c
 HEADERS += ../inc/gui.h
 
+QT += gui
+QT += core
 QT += widgets

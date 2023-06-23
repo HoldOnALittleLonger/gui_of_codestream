@@ -20,7 +20,7 @@
 #include"gmprotocol.h"
 
 #ifndef CRYPTOR_PATH
-#define CRYPTOR_PATH "/bin/cryptor"
+#define CRYPTOR_PATH "/home/UserScripts/Cryptor"
 #endif
 
 

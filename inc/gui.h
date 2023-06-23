@@ -33,9 +33,6 @@ class QLabel;
 
 namespace csgui {
 
-  static const char *MEMORY_ERROR("ERROR : Memory allocate failed.");
-  static const char *IO_ERROR("ERROR : IO exception.");
-
   class Csgui final : public QObject {
     Q_OBJECT
   public slots:

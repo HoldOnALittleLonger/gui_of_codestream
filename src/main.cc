@@ -21,10 +21,15 @@
 #include<unistd.h>
 #include<signal.h>
 
+#include<errno.h>
+
 #include<iostream>
 #include<cstring>
 
 #include<QtWidgets/QApplication>
+#include<QtWidgets/QLabel>
+#include<QtCore/QString>
+#include<QtGui/QtGui>
 
 #include"gui.h"
 #include"xwcode_stream.h"
@@ -48,14 +53,6 @@ void signalaction_SIGCHLD([[maybe_unused]]int arg)
 
 int main(int argc, char *argv[])
 {
-  int unix_socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
-  struct sockaddr_un unix_sockaddr = {
-    .sun_family = AF_UNIX,
-  };
-
-  strncpy(unix_sockaddr.sun_path, UNIX_SOCK_PATH, strlen(UNIX_SOCK_PATH));
-  unix_sockaddr.sun_path[strlen(UNIX_SOCK_PATH) + 1] = '\0';
-
   pid_t forkPid = fork();
 
   if (forkPid > 0) {  //  parent
@@ -74,13 +71,20 @@ int main(int argc, char *argv[])
     if (!access(UNIX_SOCK_PATH, F_OK))
       unlink(UNIX_SOCK_PATH);
 
-    bind(unix_socket_fd, (struct sockaddr *)&unix_sockaddr, sizeof(struct sockaddr_un));
+    int unix_socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    struct sockaddr_un unix_sockaddr;
+    unix_sockaddr.sun_family = AF_UNIX;
+    strncpy(unix_sockaddr.sun_path, UNIX_SOCK_PATH, strlen(UNIX_SOCK_PATH));
+    unix_sockaddr.sun_path[strlen(UNIX_SOCK_PATH) + 1] = '\0';
+
+    bind(unix_socket_fd, (struct sockaddr *)&unix_sockaddr, (socklen_t)sizeof(unix_sockaddr));
     listen(unix_socket_fd, 1);
 
     //  wait client.
-    socklen_t addr_len(sizeof(struct sockaddr_un));
-    int communicateSocket = accept(unix_socket_fd, (struct sockaddr *)&unix_sockaddr, &addr_len);
+    int communicateSocket = accept(unix_socket_fd, NULL, NULL);
     csgui::Csgui *pObjCsgui(nullptr);
+
+    QApplication app(argc, argv);
 
     try {
       pObjCsgui = new csgui::Csgui(communicateSocket);
@@ -89,10 +93,6 @@ int main(int argc, char *argv[])
       delete pObjCsgui;
       exit(XWCODE_STREAM_PROGRAM_ERROR);
     }
-
-    QApplication app(argc, argv);
-    QApplication::exec();
-
     try {
       pObjCsgui->startEventLoop();
     } catch (std::string s) {
@@ -102,16 +102,24 @@ int main(int argc, char *argv[])
 
     //  dont care about what child has returned
     (void)wait(NULL);
-
   } else if (forkPid == 0) {  //  child
     sleep(1);  //  let parent executes first.
-    int communicateSocket = -1;
-    if (connect(communicateSocket, (struct sockaddr *)&unix_sockaddr, sizeof(struct sockaddr_un)) < 0) {
+    errno = 0;
+
+    int client_unix_sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    struct sockaddr_un server_addr = {
+      .sun_family = AF_UNIX
+    };
+    strncpy(server_addr.sun_path, UNIX_SOCK_PATH, strlen(UNIX_SOCK_PATH));
+    server_addr.sun_path[strlen(UNIX_SOCK_PATH) + 1] = '\0';
+
+    if (connect(client_unix_sock_fd, (struct sockaddr *)&server_addr, (socklen_t)sizeof(server_addr)) < 0) {
       std::cerr<<MAIN_CONNECTION_ERROR<<std::endl;
+      std::cerr<<strerror(errno)<<std::endl;
       exit(XWCODE_STREAM_SOCK_ERROR);
     }
 
-    middle_procedure(communicateSocket);
+    middle_procedure(client_unix_sock_fd);
   } else {
     std::cerr<<MAIN_FORK_ERROR<<std::endl;
   }
