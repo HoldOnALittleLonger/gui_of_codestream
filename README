@@ -1,0 +1,56 @@
+								Project<gui_of_codestream>
+
+Description:
+	Qt5 GUI of code_stream project.
+
+Design reason:
+	just interesting.
+
+Structure:
+	[ Qt GUI
+	    Middle
+	  code_stream ]
+
+Logic order:
+	GUI program start ->
+	fork and execute Middle ->
+	GUI enter event loop ->
+	wait user input from GUI ->
+	send request to Middle ->
+	Middle fork and exec code_stream ->
+	Middle read data via pipe from code_stream ->
+	Middle return result to GUI ->
+	GUI enter event loop ->
+
+Feature design:
+	Communication between GUI and Middle is UNIX domain socket.
+	Communication between Middle and code_stream is pipe.
+
+	GUI-Middle communicate protocol :
+	  struct gmprotocol {
+	    char key_option[3];  /*  string "-k"  */
+	    char ed_option[3];   /*  string "-e" / "-d"  */
+	    unsigned short key;  /*  key value  */
+	  };  /*  size of gmprotocol should is 12B(4 adjustment)
+
+	GUI style :
+	    <[QComboBox] | [QSpinBox] | [QLineEdit] | [QLabel] | [QPushBotton]>  QVBoxLayout
+	     encode / decode
+		           key value    input         output     Start process
+
+Develop environment:
+	Qt5
+	C C++
+	Linux 3.10
+	glibc2.17
+	CentOS 7
+
+Debug or Other:
+	TODO:
+	<Debug and TODO.All programs are not probably no bugs.And they are also have the space to optimize.>
+
+Complement:
+	<There could place some messages as additional.Addition could explain the project in the further gradation.>
+
+Version:
+	<Version of it>
