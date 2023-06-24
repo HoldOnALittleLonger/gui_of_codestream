@@ -21,7 +21,7 @@
 #include<exception>
 #include"xwcode_stream.h"
 
-#include<QtCore/QObject>
+#include<QtWidgets/QMainWindow>
 
 class QWidget;
 class QVBoxLayout;
@@ -33,7 +33,7 @@ class QLabel;
 
 namespace csgui {
 
-  class Csgui final : public QObject {
+  class Csgui final : public QMainWindow {
     Q_OBJECT
   public slots:
     void start(void);
@@ -42,7 +42,7 @@ namespace csgui {
   signals: void shouldUpdate(void);
  
   public:
-    explicit Csgui(int unix_socket_fd) noexcept(false);
+    explicit Csgui(int unix_socket_fd);
     ~Csgui();
     Csgui(Csgui &) =delete;
     Csgui &operator=(Csgui &) =delete;
@@ -82,6 +82,8 @@ namespace csgui {
      *  return - no return.
      */
     void updateLabel(const char *msg) noexcept(false);
+
+    void first_settings(void);
 
   };
 

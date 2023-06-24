@@ -21,15 +21,13 @@
 #include<unistd.h>
 #include<signal.h>
 
-#include<errno.h>
-
 #include<iostream>
 #include<cstring>
 
 #include<QtWidgets/QApplication>
 #include<QtWidgets/QLabel>
 #include<QtCore/QString>
-#include<QtGui/QtGui>
+#include<QtConcurrent/QtConcurrent>
 
 #include"gui.h"
 #include"xwcode_stream.h"
@@ -49,6 +47,17 @@ void signalaction_SIGCHLD([[maybe_unused]]int arg)
 {
   std::cerr<<"Child Process stopped"<<std::endl;
   _exit(XWCODE_STREAM_CHILD_EXCEPTION);
+}
+
+
+void CsguiEventThread(csgui::Csgui *pobj)
+{
+  try {
+    pobj->startEventLoop();
+  } catch (std::string &s) {
+    std::cerr<<s<<std::endl;
+    exit(XWCODE_STREAM_PROGRAM_ERROR);
+  }
 }
 
 int main(int argc, char *argv[])
@@ -82,26 +91,13 @@ int main(int argc, char *argv[])
 
     //  wait client.
     int communicateSocket = accept(unix_socket_fd, NULL, NULL);
-    csgui::Csgui *pObjCsgui(nullptr);
 
     QApplication app(argc, argv);
+    csgui::Csgui csguiObj(communicateSocket);
 
-    try {
-      pObjCsgui = new csgui::Csgui(communicateSocket);
-    } catch (std::string s) {
-      std::cerr<<s<<std::endl;
-      delete pObjCsgui;
-      exit(XWCODE_STREAM_PROGRAM_ERROR);
-    }
-    try {
-      pObjCsgui->startEventLoop();
-    } catch (std::string s) {
-      std::cerr<<s<<std::endl;
-      exit(XWCODE_STREAM_PROGRAM_ERROR);
-    }
-
-    //  dont care about what child has returned
-    (void)wait(NULL);
+    QFuture<void> future = QtConcurrent::run(CsguiEventThread, &csguiObj);
+    //  dont care about what child has returned,OS will recyle status
+    QApplication::exec();
   } else if (forkPid == 0) {  //  child
     sleep(1);  //  let parent executes first.
     errno = 0;

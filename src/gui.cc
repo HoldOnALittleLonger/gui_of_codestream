@@ -42,7 +42,7 @@ namespace csgui {
    *  @unix_socket_fd : unix socket for communicate with middle.
    *  return - no return.
    */
-  Csgui::Csgui(int unix_socket_fd) noexcept(false) : _encode_text("encode"), _decode_text("decode"), _current_action(0)
+  Csgui::Csgui(int unix_socket_fd) : _encode_text("encode"), _decode_text("decode"), _current_action(0)
   {
     _mainWidget = new QWidget;
     _mainVBox = new QVBoxLayout;
@@ -51,11 +51,11 @@ namespace csgui {
     _textLineEdit = new QLineEdit;
     _executePushButton = new QPushButton("start");
     _textLabel = new QLabel("nil");
+    _unix_socket_fd = unix_socket_fd;
+  }
 
-    if (!_mainWidget || !_mainVBox || !_selectionComboBox || !_keySpinBox || !_textLineEdit ||
-	!_executePushButton || !_textLabel)
-      throw std::string{MEMORY_ERROR};
-
+  void Csgui::first_settings(void)
+  {
     _selectionComboBox->addItem(QString{_encode_text});
     _selectionComboBox->addItem(QString{_decode_text});
     _keySpinBox->setRange(1, 16);
@@ -72,13 +72,13 @@ namespace csgui {
 
     QObject::connect(_executePushButton, SIGNAL(clicked()), this, SLOT(start()));
     QObject::connect(this, SIGNAL(shouldUpdate()), this, SLOT(update()));
-    _unix_socket_fd = unix_socket_fd;
 
-    _mainWidget->resize(1024, 768);
-    _mainWidget->setWindowTitle("xwcode_stream");
-    _mainWidget->show();
-    QApplication::exec();
+    resize(1024, 768);
+    setWindowTitle("xwcode_stream");
+    setCentralWidget(_mainWidget);
   }
+
+
 
   /*  ~Csgui - destructor  */
   Csgui::~Csgui()
@@ -162,8 +162,8 @@ namespace csgui {
     _mainVBox->addWidget(_textLabel);
 
     _mainWidget->setLayout(_mainVBox);
-    _mainWidget->show();
-    QApplication::exec();
+    _mainWidget->update();
+    QWidget::update();
   }
 
   void Csgui::updateLabel(const char *msg) noexcept(false)
@@ -179,10 +179,15 @@ namespace csgui {
     }
   }
 
-#include<QtWidgets/QApplication>
   /*  startEventLoop - start event loop driver  */
   void Csgui::startEventLoop(void) noexcept(false)
   {
+    if (!_mainWidget ||  !_selectionComboBox || !_keySpinBox ||
+	!_textLineEdit || !_executePushButton || !_textLabel)
+      throw std::string{MEMORY_ERROR};
+
+    first_settings();
+    this->show();
     for ( ; ; ) {
       fd_set readFdset;
       FD_ZERO(&readFdset);
