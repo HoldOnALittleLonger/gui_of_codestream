@@ -36,10 +36,15 @@ namespace csgui {
   class Csgui final : public QMainWindow {
     Q_OBJECT
   public slots:
-    void start(void);
-    void update(void);
-
-  signals: void shouldUpdate(void);
+    void startSlot(void);                //  event loop start
+    void inputSubcommittedSlot(void);    //  user input received
+    void backgroundWorkSlot(void);       //  bakcground process
+    void resultReturnedSlot(void);       //  result deal with
+    void guiUpdateSlot(void);            //  redraw GUI
+  signals: void inputSubcommitted(void);
+  signals: void backgroundWork(void);
+  signals: void resultReturned(void);
+  signals: void guiUpdate(void);
  
   public:
     explicit Csgui(int unix_socket_fd);
@@ -48,8 +53,7 @@ namespace csgui {
     Csgui &operator=(Csgui &) =delete;
     Csgui(Csgui &&) noexcept =delete;
     Csgui &operator=(Csgui &&) noexcept =delete;
-
-    void startEventLoop(void) noexcept(false);
+    void first_settings(void);
 
   private:
     QWidget *_mainWidget;
@@ -71,20 +75,31 @@ namespace csgui {
     int _unix_socket_fd;
     unsigned _current_action;
 
-    /*  shouldUpdate - event for info object should update display  */
-    void updateEvent(void)
-    {
-      emit shouldUpdate();
-    }
-
     /*  updateLabel - update QLabel message for new style
      *  @msg : const char pointer which points to the message string.
      *  return - no return.
      */
-    void updateLabel(const char *msg) noexcept(false);
+    void updateLabel(const char *msg);
 
-    void first_settings(void);
-
+    //  signal wrappers
+    //  this class is not allowed to be inherited by others,
+    //  so dont need to place events in protected zone.
+    void inputSubcommittedEvent(void)
+    {
+      emit inputSubcommitted();
+    }
+    void backgroundWorkEvent(void)
+    {
+      emit backgroundWork();
+    }
+    void resultReturnedEvent(void)
+    {
+      emit resultReturned();
+    }
+    void guiUpdateEvent(void)
+    {
+      emit guiUpdate();
+    }
   };
 
 }

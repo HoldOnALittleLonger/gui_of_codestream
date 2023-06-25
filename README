@@ -22,6 +22,68 @@ Logic order:
 	Middle return result to GUI ->
 	GUI enter event loop ->
 
+
+	events :
+	  inputSubcommittedEvent >
+	    user subcommit input to program.
+
+	  backgroundWorkEvent >
+	    background process work.
+
+	  resultReturnedEvent >
+	    completed work and return result by background process.
+
+	  guiUpdateEvent >
+	    use new result to update gui.
+
+	signals :
+	  inputSubcommitted >
+	    signal signature for user input subcommitted.
+
+	  backgroundWork >
+	    signal signature for backgroundWork is going to process.
+
+	  resultReturn >
+	    signal signature for the results had been returned by
+	    backgroundWork.
+
+	  guiUpdate >
+	    signal signature for redraw GUI.
+
+	slots :
+	  startSlot >
+	    event loop start,this slot would connected with clicked() of
+	    QPushButton.
+
+	  inputSubcommittedSlot >
+	    real work have to be done when signal inputSubcommitted was 
+	    delivered.
+
+	  backgroundWorkSlot >
+	    program should wait for background process return.
+
+	  resultReturnedSlot >
+	    the work have to be done after result was returned.
+
+	  guiUpdateSlot >
+	    update GUI.
+
+	loop :
+	  gui enter event loop >
+	  wait for user input >
+	  subcommit button was pressed >
+	  produce inputCommit >
+	  inputCommit delivered >
+	  produce backgroundWork >
+	  program enter block and wait >
+	  produce resultReturn >
+	  produce guiUpdate >
+	  program update gui >
+	  goto loop head >
+
+
+
+
 Feature design:
 	Communication between GUI and Middle is UNIX domain socket.
 	Communication between Middle and code_stream is pipe.

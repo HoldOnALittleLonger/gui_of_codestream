@@ -18,5 +18,4 @@ SOURCES += gui.cc main.cc middle.c
 HEADERS += ../inc/gui.h
 
 QT += widgets
-QT += concurrent
 

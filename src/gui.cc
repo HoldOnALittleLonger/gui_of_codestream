@@ -22,7 +22,6 @@
 #include<QtWidgets/QPushButton>
 #include<QtWidgets/QLabel>
 #include<QtCore/QString>
-#include<QtWidgets/QApplication>
 
 #include<fcntl.h>
 #include<unistd.h>
@@ -54,6 +53,7 @@ namespace csgui {
     _unix_socket_fd = unix_socket_fd;
   }
 
+  /*  first_settings - before work start,have to makeup GUI  */
   void Csgui::first_settings(void)
   {
     _selectionComboBox->addItem(QString{_encode_text});
@@ -61,7 +61,6 @@ namespace csgui {
     _keySpinBox->setRange(1, 16);
     _textLineEdit->setAlignment(Qt::AlignLeft);
     _textLineEdit->setPlaceholderText("enter text");
-
     _mainVBox->setDirection(QVBoxLayout::LeftToRight);
     _mainVBox->addWidget(_selectionComboBox);
     _mainVBox->addWidget(_keySpinBox);
@@ -70,23 +69,23 @@ namespace csgui {
     _mainVBox->addWidget(_textLabel);
     _mainWidget->setLayout(_mainVBox);
 
-    QObject::connect(_executePushButton, SIGNAL(clicked()), this, SLOT(start()));
-    QObject::connect(this, SIGNAL(shouldUpdate()), this, SLOT(update()));
+    QObject::connect(_executePushButton, SIGNAL(clicked()), this, SLOT(startSlot()));  //  makeup entrance.
+    QObject::connect(this, SIGNAL(inputSubcommitted()), this, SLOT(inputSubcommittedSlot()));
+    QObject::connect(this, SIGNAL(backgroundWork()), this, SLOT(backgroundWorkSlot()));
+    QObject::connect(this, SIGNAL(resultReturned()), this, SLOT(resultReturnedSlot()));
+    QObject::connect(this, SIGNAL(guiUpdate()), this, SLOT(guiUpdateSlot()));
 
     resize(1024, 768);
     setWindowTitle("xwcode_stream");
     setCentralWidget(_mainWidget);
+    
+    this->show();
   }
-
 
 
   /*  ~Csgui - destructor  */
   Csgui::~Csgui()
   {
-    delete _mainWidget;
-    _mainWidget = nullptr;
-    delete _mainVBox;
-    _mainVBox = nullptr;
     delete _selectionComboBox;
     _selectionComboBox = nullptr;
     delete _keySpinBox;
@@ -95,11 +94,24 @@ namespace csgui {
     _textLineEdit = nullptr;
     delete _textLabel;
     _textLabel = nullptr;
+
+    //  destructor of QWidget will automatically destroy layout.
+    //  use reverse order to prevent SIGSEGV.
+    delete _mainVBox;
+    _mainVBox = nullptr;
+    delete _mainWidget;
+    _mainWidget = nullptr;
+  }
+
+  /*  startSlot - wrapper for inputSubcommittedEvent.  */
+  void Csgui::startSlot(void)
+  {
+    inputSubcommittedEvent();
   }
 
 
-  /*  start - Qt slot,it is used to start process  */
-  void Csgui::start(void)
+  /*  inputSubcommittedSlot - the work after QPushButton was pressed  */
+  void Csgui::inputSubcommittedSlot(void)
   {
     if (_selectionComboBox->currentText() == QString{_encode_text})
       _current_action = 1;
@@ -112,7 +124,7 @@ namespace csgui {
     char *text_buffer(new char[tbs]);
     if (!text_buffer) {
       updateLabel(MEMORY_ERROR);
-      updateEvent();
+      guiUpdateEvent();
       sleep(1);
       exit(XWCODE_STREAM_MEMORY_ERROR);
     }
@@ -135,16 +147,23 @@ namespace csgui {
     if (ioReturn != sizeof(struct gmprotocol) + gmp.text_length) {
       delete[] text_buffer;
       updateLabel(IO_ERROR);
-      updateEvent();
+      guiUpdateEvent();
       sleep(1);
       exit(XWCODE_STREAM_MEMORY_ERROR);
     }
 
     delete[] text_buffer;
+    backgroundWorkEvent();  //  produce new event
   }
 
-  /*  update - Qt slot,it is used to update display  */
-  void Csgui::update(void)
+  /*  resultReturnedSlot - the work after results had been returned  */
+  void Csgui::resultReturnedSlot(void)
+  {
+    guiUpdateEvent();
+  }
+
+  /*  guiUpdateSlot - redraw GUI  */
+  void Csgui::guiUpdateSlot(void)
   {
     if (_mainVBox)
       delete _mainVBox,
@@ -163,10 +182,11 @@ namespace csgui {
 
     _mainWidget->setLayout(_mainVBox);
     _mainWidget->update();
-    QWidget::update();
+    this->update();
   }
 
-  void Csgui::updateLabel(const char *msg) noexcept(false)
+  /*  updateLabel - update QLabel widget with new message.  */
+  void Csgui::updateLabel(const char *msg)
   {
     if (msg) {
       if (_textLabel)
@@ -175,20 +195,13 @@ namespace csgui {
 
       _textLabel = new QLabel(msg);
       if (!_textLabel)
-	throw std::string{MEMORY_ERROR};
+	exit(XWCODE_STREAM_MEMORY_ERROR);
     }
   }
 
-  /*  startEventLoop - start event loop driver  */
-  void Csgui::startEventLoop(void) noexcept(false)
+  /*  backgroundWorkSlot - the work after request had been sent  */
+  void Csgui::backgroundWorkSlot(void)
   {
-    if (!_mainWidget ||  !_selectionComboBox || !_keySpinBox ||
-	!_textLineEdit || !_executePushButton || !_textLabel)
-      throw std::string{MEMORY_ERROR};
-
-    first_settings();
-    this->show();
-    for ( ; ; ) {
       fd_set readFdset;
       FD_ZERO(&readFdset);
       FD_SET(_unix_socket_fd, &readFdset);
@@ -202,7 +215,7 @@ namespace csgui {
 	char *text_buffer(new char[tbs]);
 	if (!text_buffer) {
 	  updateLabel(MEMORY_ERROR);
-	  updateEvent();
+	  guiUpdateEvent();
 	  sleep(1);
 	  exit(XWCODE_STREAM_MEMORY_ERROR);
 	}
@@ -210,26 +223,27 @@ namespace csgui {
 
 	ssize_t ioReturn = recv(_unix_socket_fd, &gmp, sizeof(struct gmprotocol), 0);
 
-      internal_exit:
+      internal_error_exit:
 
 	if (ioReturn <= 0) {
 	  delete[] text_buffer;
 	  updateLabel(IO_ERROR);
-	  updateEvent();
+	  guiUpdateEvent();
 	  sleep(1);
 	  exit(XWCODE_STREAM_IOERROR);
 	}
-
 	//  read next data fragment
 	ioReturn = recv(_unix_socket_fd, text_buffer, gmp.text_length, 0);
-	if (ioReturn != gmp.text_length)
-	  goto internal_exit;
+	if (ioReturn != gmp.text_length) {
+	  ioReturn = -1;
+	  goto internal_error_exit;
+	}
+
 	
 	updateLabel(text_buffer);
-	updateEvent();
-
+	delete[] text_buffer;
+	resultReturnedEvent();
       }
-    }
   }
 
 }

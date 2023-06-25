@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I. -I../inc -I/usr/local/share/qt5.15.8/include -I/usr/local/share/qt5.15.8/include/QtWidgets -I/usr/local/share/qt5.15.8/include/QtGui -I/usr/local/share/qt5.15.8/include/QtConcurrent -I/usr/local/share/qt5.15.8/include/QtCore -I. -I/usr/local/share/qt5.15.8/mkspecs/linux-g++
+INCPATH       = -I. -I. -I../inc -I/usr/local/share/qt5.15.8/include -I/usr/local/share/qt5.15.8/include/QtWidgets -I/usr/local/share/qt5.15.8/include/QtGui -I/usr/local/share/qt5.15.8/include/QtCore -I. -I/usr/local/share/qt5.15.8/mkspecs/linux-g++
 QMAKE         = /usr/local/share/qt5.15.8/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = xwcode_stream1.0.0
 DISTDIR = /home/Myfiles/Programming/Code/github/gui_of_codestream/src/.tmp/xwcode_stream1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
-LIBS          = $(SUBLIBS) /lib64/libQt5Widgets.so.5 /lib64/libQt5Gui.so.5 /lib64/libQt5Concurrent.so.5 /lib64/libQt5Core.so.5 -lpthread   
+LIBS          = $(SUBLIBS) /lib64/libQt5Widgets.so.5 /lib64/libQt5Gui.so.5 /lib64/libQt5Core.so.5 -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -693,7 +693,7 @@ moc_gui.cpp: ../inc/gui.h \
 		/usr/local/share/qt5.15.8/include/QtGui/qicon.h \
 		moc_predefs.h \
 		/usr/local/share/qt5.15.8/bin/moc
-	/usr/local/share/qt5.15.8/bin/moc $(DEFINES) --include /home/Myfiles/Programming/Code/github/gui_of_codestream/src/moc_predefs.h -I/usr/local/share/qt5.15.8/mkspecs/linux-g++ -I/home/Myfiles/Programming/Code/github/gui_of_codestream/src -I/home/Myfiles/Programming/Code/github/gui_of_codestream/src -I/home/Myfiles/Programming/Code/github/gui_of_codestream/inc -I/usr/local/share/qt5.15.8/include -I/usr/local/share/qt5.15.8/include/QtWidgets -I/usr/local/share/qt5.15.8/include/QtGui -I/usr/local/share/qt5.15.8/include/QtConcurrent -I/usr/local/share/qt5.15.8/include/QtCore -I/usr/local/include/c++/10.3.0 -I/usr/local/include/c++/10.3.0/x86_64-pc-linux-gnu -I/usr/local/include/c++/10.3.0/backward -I/usr/local/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include -I/usr/local/include -I/usr/local/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include-fixed -I/usr/include ../inc/gui.h -o moc_gui.cpp
+	/usr/local/share/qt5.15.8/bin/moc $(DEFINES) --include /home/Myfiles/Programming/Code/github/gui_of_codestream/src/moc_predefs.h -I/usr/local/share/qt5.15.8/mkspecs/linux-g++ -I/home/Myfiles/Programming/Code/github/gui_of_codestream/src -I/home/Myfiles/Programming/Code/github/gui_of_codestream/src -I/home/Myfiles/Programming/Code/github/gui_of_codestream/inc -I/usr/local/share/qt5.15.8/include -I/usr/local/share/qt5.15.8/include/QtWidgets -I/usr/local/share/qt5.15.8/include/QtGui -I/usr/local/share/qt5.15.8/include/QtCore -I/usr/local/include/c++/10.3.0 -I/usr/local/include/c++/10.3.0/x86_64-pc-linux-gnu -I/usr/local/include/c++/10.3.0/backward -I/usr/local/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include -I/usr/local/include -I/usr/local/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include-fixed -I/usr/include ../inc/gui.h -o moc_gui.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -853,14 +853,7 @@ gui.o: gui.cc /usr/local/share/qt5.15.8/include/QtWidgets/QWidget \
 		../inc/xwcode_stream.h \
 		../inc/gui.h \
 		/usr/local/share/qt5.15.8/include/QtWidgets/QMainWindow \
-		/usr/local/share/qt5.15.8/include/QtWidgets/qmainwindow.h \
-		/usr/local/share/qt5.15.8/include/QtWidgets/QApplication \
-		/usr/local/share/qt5.15.8/include/QtWidgets/qapplication.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcoreapplication.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qeventloop.h \
-		/usr/local/share/qt5.15.8/include/QtWidgets/qdesktopwidget.h \
-		/usr/local/share/qt5.15.8/include/QtGui/qguiapplication.h \
-		/usr/local/share/qt5.15.8/include/QtGui/qinputmethod.h
+		/usr/local/share/qt5.15.8/include/QtWidgets/qmainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gui.o gui.cc
 
 main.o: main.cc /usr/local/share/qt5.15.8/include/QtWidgets/QApplication \
@@ -972,153 +965,6 @@ main.o: main.cc /usr/local/share/qt5.15.8/include/QtWidgets/QApplication \
 		/usr/local/share/qt5.15.8/include/QtGui/qtouchdevice.h \
 		/usr/local/share/qt5.15.8/include/QtGui/qguiapplication.h \
 		/usr/local/share/qt5.15.8/include/QtGui/qinputmethod.h \
-		/usr/local/share/qt5.15.8/include/QtWidgets/QLabel \
-		/usr/local/share/qt5.15.8/include/QtWidgets/qlabel.h \
-		/usr/local/share/qt5.15.8/include/QtWidgets/qframe.h \
-		/usr/local/share/qt5.15.8/include/QtCore/QString \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/QtConcurrent \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/QtConcurrentDepends \
-		/usr/local/share/qt5.15.8/include/QtCore/QtCore \
-		/usr/local/share/qt5.15.8/include/QtCore/QtCoreDepends \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstractanimation.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstracteventdispatcher.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstractitemmodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstractnativeeventfilter.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstractproxymodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstractstate.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qabstracttransition.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qanimationgroup.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qarraydataops.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qarraydatapointer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qbasictimer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qbitarray.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qbuffer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qbytearraymatcher.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcache.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcalendar.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborarray.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborvalue.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qdatetime.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborcommon.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qregularexpression.h \
-		/usr/local/share/qt5.15.8/include/QtCore/quuid.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcbormap.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborstream.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborstreamreader.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfloat16.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcborstreamwriter.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcollator.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcommandlineoption.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcommandlineparser.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qconcatenatetablesproxymodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qcryptographichash.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qdeadlinetimer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qelapsedtimer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qdir.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfileinfo.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qdiriterator.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qeasingcurve.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qendian.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qeventtransition.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qexception.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfactoryinterface.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfileselector.h \
-		/usr/local/share/qt5.15.8/include/QtCore/QObject \
-		/usr/local/share/qt5.15.8/include/QtCore/QStringList \
-		/usr/local/share/qt5.15.8/include/QtCore/qfilesystemwatcher.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfinalstate.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfuture.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfutureinterface.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qrunnable.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qresultstore.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfuturesynchronizer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qfuturewatcher.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qhistorystate.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qidentityproxymodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qisenum.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qitemselectionmodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qjsonarray.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qjsonvalue.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qjsondocument.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qjsonobject.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qlibrary.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qlibraryinfo.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qversionnumber.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qlinkedlist.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qlockfile.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qloggingcategory.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmath.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmessageauthenticationcode.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmetaobject.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmimedata.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmimedatabase.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qmimetype.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qobjectcleanuphandler.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qoperatingsystemversion.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qparallelanimationgroup.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qpauseanimation.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qplugin.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qpointer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qpluginloader.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qprocess.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qpropertyanimation.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qvariantanimation.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qqueue.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qrandom.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qreadwritelock.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qresource.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsavefile.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qscopedvaluerollback.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qscopeguard.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsemaphore.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsequentialanimationgroup.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsettings.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsharedmemory.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsignalmapper.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsignaltransition.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsocketnotifier.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsortfilterproxymodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstack.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstandardpaths.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstate.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstatemachine.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstorageinfo.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qstringlistmodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qsystemsemaphore.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtemporarydir.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtemporaryfile.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtextboundaryfinder.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtextcodec.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qthread.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qthreadpool.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qthreadstorage.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtimeline.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtimer.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtimezone.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtranslator.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtransposeproxymodel.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtypetraits.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qwaitcondition.h \
-		/usr/local/share/qt5.15.8/include/QtCore/QDeadlineTimer \
-		/usr/local/share/qt5.15.8/include/QtCore/qwineventnotifier.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qxmlstream.h \
-		/usr/local/share/qt5.15.8/include/QtCore/qtcoreversion.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentcompilertest.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrent_global.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentexception.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentfilter.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentfilterkernel.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentiteratekernel.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentmedian.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentthreadengine.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentmapkernel.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentreducekernel.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentfunctionwrappers.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentmap.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentrun.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentrunbase.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentstoredfunctioncall.h \
-		/usr/local/share/qt5.15.8/include/QtConcurrent/qtconcurrentversion.h \
 		../inc/gui.h \
 		../inc/xwcode_stream.h \
 		/usr/local/share/qt5.15.8/include/QtWidgets/QMainWindow \
